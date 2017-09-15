@@ -57,7 +57,9 @@ public class MainScreen {
         Scene scene = new Scene(mainBox);
         stage.setTitle(InternationalizationUtil.getString(Constants.TITLE));
         stage.setScene(scene);
-        stage.setMaximized(true);
+        stage.setMinWidth(Constants.TITLED_WIDTH);
+        stage.setMinHeight(Constants.TITLED_HEIGHT);
+        //stage.setMaximized(true);
         stage.show();
     }
 }

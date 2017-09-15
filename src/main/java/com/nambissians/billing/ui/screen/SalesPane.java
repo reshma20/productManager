@@ -8,6 +8,7 @@ import com.nambissians.billing.utils.Constants;
 import com.nambissians.billing.utils.InternationalizationUtil;
 import javafx.geometry.Insets;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.stage.Stage;
 
@@ -42,7 +43,10 @@ public class SalesPane extends TitlePaneGenerator {
         TitledPane salesPane = new TitledPane();
         salesPane.setText(InternationalizationUtil.getString(Constants.SALES));
         Accordion subRoot = new Accordion();
-
+        ScrollPane scrlPane = new ScrollPane();
+        salesPane.setMinHeight(Constants.TITLED_HEIGHT);
+        subRoot.setMinWidth(Constants.TITLED_WIDTH);
+        scrlPane.setContent(subRoot);
         subRoot.setPadding(new Insets(0, 0, 0, 10));
         TitledPane newPane = new NewSalesHandler(InternationalizationUtil.getString(Constants.NEW)).handle();
         newPane.expandedProperty().addListener(new NewSalesTitledHandler(newPane));
@@ -50,7 +54,7 @@ public class SalesPane extends TitlePaneGenerator {
         TitledPane listPane = new EditSalesHandler(InternationalizationUtil.getString(Constants.LIST)).handle();
         listPane.expandedProperty().addListener(new ListSalesTitledPane(listPane));
         subRoot.getPanes().addAll(newPane, listPane);
-        salesPane.setContent(subRoot);
+        salesPane.setContent(scrlPane);
         return salesPane;
     }
 }

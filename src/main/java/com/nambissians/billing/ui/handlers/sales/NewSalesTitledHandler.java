@@ -290,8 +290,8 @@ public class NewSalesTitledHandler extends AbstractTitledPaneChangeListener {
         HBox salesMetaDataSection = populateSalesMetaData();
         VBox customerSection = populateCustomerPane();
         HBox saleSection = populateSaleBox();
-        customerSection.setMinWidth(Constants.TITLED_WIDTH / 4 * 3);
-        customerSection.setMaxWidth(Constants.TITLED_WIDTH / 4 * 3);
+        customerSection.setMinWidth(Constants.TITLED_WIDTH / 2+20);
+        customerSection.setMaxWidth(Constants.TITLED_WIDTH / 2+20);
         customerSection.setMinHeight(Constants.TITLED_HEIGHT / 8 * 3);
         customerSection.setMaxHeight(Constants.TITLED_HEIGHT / 8 * 3);
         totalWrapper.getChildren().addAll(customerSection, lblTotal);
@@ -299,8 +299,14 @@ public class NewSalesTitledHandler extends AbstractTitledPaneChangeListener {
         newSalesBox.getChildren().addAll(totalWrapper, salesMetaDataSection, productsSection, saleSection);
         newSalesBox.setPadding(insets);
         pane.setPadding(insets);
-        pane.setContent(newSalesBox);
-        pane.setMinHeight(Constants.TITLED_HEIGHT);
+        ScrollPane scrlPane = new ScrollPane();
+        scrlPane.setPadding(insets);
+        scrlPane.setContent(newSalesBox);
+        newSalesBox.setMinHeight(Constants.TITLED_HEIGHT);
+        scrlPane.setMinHeight(Constants.TITLED_HEIGHT);
+        //scrlPane.setMinWidth(Constants.TITLED_WIDTH);
+        pane.setContent(scrlPane);
+        pane.setMinHeight(Constants.TITLED_HEIGHT+100);
     }
 
     protected VBox populateCustomerPane() {

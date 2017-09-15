@@ -87,7 +87,7 @@ public interface Constants {
     String WILD_CARD_FOR_ANY = "%";
     String ERR_NO_MATCHING_PRODUCT="ERR_NO_MATCHING_PRODUCT";
     String PRODUCT_TAG="productTag";
-    int TITLED_HEIGHT = 700;
+    int TITLED_HEIGHT = 600;
     int TITLED_WIDTH = 1200;
     int SALE_REPORT_HEIGHT=275;
     String P_CODE ="productId";

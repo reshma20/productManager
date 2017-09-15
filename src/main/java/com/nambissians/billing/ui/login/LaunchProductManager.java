@@ -55,7 +55,6 @@ public class LaunchProductManager extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         //Parent root = FXMLLoader.load(getClass().getResource(LAUNCH_SCREEN));
-        logger.debug("Saji is great");
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -67,6 +66,7 @@ public class LaunchProductManager extends Application {
         Label userName = new Label(InternationalizationUtil.getString(USER_NAME));
         grid.add(userName, 0, 1);
         TextField txtUserName = new TextField();
+        txtUserName.requestFocus();
         grid.add(txtUserName, 1, 1);
         Label pw = new Label(InternationalizationUtil.getString(PASSWORD));
         grid.add(pw, 0, 2);

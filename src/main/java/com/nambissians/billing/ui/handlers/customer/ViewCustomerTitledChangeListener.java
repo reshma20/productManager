@@ -10,6 +10,7 @@ import com.nambissians.billing.utils.GridUtils;
 import com.nambissians.billing.utils.InternationalizationUtil;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -112,9 +113,11 @@ public class ViewCustomerTitledChangeListener extends AbstractTitledPaneChangeLi
 
     @Override
     protected void populatePane(TitledPane pane) {
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(populateTableView());
-        pane.setContent(scrollPane);
+        ScrollPane scrlPane = new ScrollPane();
+        scrlPane.setPadding(new Insets(10,10,10,10));
+        scrlPane.setContent(populateTableView());
+        scrlPane.setMinHeight(Constants.TITLED_HEIGHT);
+        pane.setContent(scrlPane);
     }
 
     public void populateScrollPane(ScrollPane pane) {

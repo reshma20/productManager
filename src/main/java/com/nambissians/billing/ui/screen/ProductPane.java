@@ -1,9 +1,7 @@
 package com.nambissians.billing.ui.screen;
 
 
-import com.nambissians.billing.model.Product;
 import com.nambissians.billing.model.Tax;
-import com.nambissians.billing.service.ProductServiceImpl;
 import com.nambissians.billing.service.TaxServiceImpl;
 import com.nambissians.billing.ui.handlers.CancelButtonTitledHandler;
 import com.nambissians.billing.ui.handlers.product.EditProductHandler;
@@ -11,17 +9,13 @@ import com.nambissians.billing.ui.handlers.product.NewProductHandler;
 import com.nambissians.billing.ui.handlers.product.ProductViewChangeListener;
 import com.nambissians.billing.ui.handlers.product.SaveProductButtonHandler;
 import com.nambissians.billing.utils.Constants;
-import com.nambissians.billing.utils.GridUtils;
 import com.nambissians.billing.utils.InternationalizationUtil;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +75,10 @@ class NewProductTitledPaneChangeListener extends AbstractTitledPaneChangeListene
         pane.setMinWidth(Constants.TITLED_WIDTH);
         pane.setMinHeight(Constants.TITLED_HEIGHT);
         GridPane gridPane = new GridPane();
-        pane.setContent(gridPane);
+        ScrollPane scrlPane = new ScrollPane();
+        scrlPane.setPadding(new Insets(10, 10, 10, 10));
+        pane.setContent(scrlPane);
+        scrlPane.setContent(gridPane);
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setHgap(10);
         gridPane.setVgap(10);

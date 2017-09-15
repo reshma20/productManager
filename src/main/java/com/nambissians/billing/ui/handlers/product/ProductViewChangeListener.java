@@ -10,6 +10,7 @@ import com.nambissians.billing.utils.GridUtils;
 import com.nambissians.billing.utils.InternationalizationUtil;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -113,7 +114,11 @@ public class ProductViewChangeListener extends AbstractTitledPaneChangeListener 
 
     @Override
     protected void populatePane(TitledPane pane) {
-        pane.setContent(populateTable());
+        ScrollPane scrlPane = new ScrollPane();
+        scrlPane.setPadding(new Insets(10,10,10,10));
+        scrlPane.setContent(populateTable());
+        scrlPane.setMinHeight(Constants.TITLED_HEIGHT);
+        pane.setContent(scrlPane);
     }
 
     public Product getSelectedProduct() {
