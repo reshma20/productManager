@@ -6,7 +6,7 @@ package com.nambissians.billing.utils;
 public interface InvoiceConstants {
     int MIN_X = 10;
     int MAX_X = 2480;
-    int MIN_Y = 0;
+    int MIN_Y = 2;
     int MAX_Y = 3508;
 
     int MARGIN = 5;
@@ -25,13 +25,13 @@ public interface InvoiceConstants {
     int COMPANY_ADDRESS_FONT_SIZE = 8;
 
     int CUSTOMER_DETS_FONT_SIZE = 8;
-    int CUSTOMER_INVOICE_FONT_SIZE = 6;
+    int CUSTOMER_INVOICE_FONT_SIZE = 8;
     int GST_INVOICE_FONT_SIZE = 10;
 
     int INVOICE_BOX_MIN_X = 20;
     int INVOICE_BOX_MIN_Y = 36;
-    int INVOICE_BOX_MAX_X = 559;
-    int INVOICE_BOX_MAX_Y = 806;
+    int INVOICE_BOX_MAX_X = 575;
+    int INVOICE_BOX_MAX_Y = 559;
 
     int OWNER_PROFILE_Y = 670;
     int CUSTOMER_BOX_MAX_Y=665;

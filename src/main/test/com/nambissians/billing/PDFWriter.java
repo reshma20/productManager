@@ -3,10 +3,7 @@ package com.nambissians.billing;/**
  */
 
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.CMYKColor;
-import com.itextpdf.text.pdf.ColumnText;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
 import com.nambissians.billing.model.*;
 import com.nambissians.billing.service.ProductServiceImpl;
 import com.nambissians.billing.service.ProfileServiceImpl;
@@ -62,7 +59,7 @@ public class PDFWriter {
         DBConnectionUtils.initializeDbConnections("manager", "manager");
         ownerProfile = profileService.getOwnerProfile();
         products = new ProductServiceImpl().getAllProductsWithApplicableTaxes();
-        saleRecord = saleReportService.getSaleRecord("7df6d5a9-b576-4869-b2c8-d2ce829974a0");
+        saleRecord = saleReportService.getSaleRecord("e663bb3f-837c-462a-8d02-404f08503ea5", true);
     }
 
     private void feedOwnerData(Document document, PdfWriter writer) throws IOException, DocumentException {
@@ -107,7 +104,7 @@ public class PDFWriter {
         ColumnText ctNumber = new ColumnText(writer.getDirectContent());
         ctNumber.setSimpleColumn(new Rectangle(InvoiceConstants.INVOICE_NUMBER_BOX_MIN_X, InvoiceConstants.INVOICE_NUMBER_BOX_MIN_Y,
                 InvoiceConstants.INVOICE_NUMBER_BOX_MAX_X, InvoiceConstants.INVOICE_NUMBER_BOX_MAX_Y));
-        Font invoiceNumberFont = FontFactory.getFont(FontFactory.COURIER_BOLD, InvoiceConstants.COMPANY_ADDRESS_FONT_SIZE, BaseColor.RED);
+        Font invoiceNumberFont = FontFactory.getFont(FontFactory.COURIER_BOLD, InvoiceConstants.COMPANY_ADDRESS_FONT_SIZE, BaseColor.BLACK);
         String invoiceNumber = String.format("%-15s%06d", Constants.INVOICE_NUMBER, saleRecord.getSaleMetaData().getId());
         Chunk invoiceNumberChunk = new Chunk(invoiceNumber, invoiceNumberFont);
         ctNumber.addElement(invoiceNumberChunk);
@@ -121,9 +118,9 @@ public class PDFWriter {
         document.add(titlePhrase);
     }
 
-    private static final String TAG_LINE = "%-3s %-4s %-30s %-10s %-12s %-6s %-6s %-15s %-8s %-6s %-5s %15s";
-    private static final String INVOICE_STATEMENTS = "%3d %-4d %-30s %10.2f %8d %10.2f %06.2f %012.2f %10s %6.2f %6.2f %17.2f";
-    private static final String TAXES_ONLY = "%84s %15s";
+    private static final String TAG_LINE = "%-3s %-4s %-6s %-20s %-10s %-6s %-6s %-10s %-8s %-6s %-5s %-10s";
+    private static final String INVOICE_STATEMENTS = "%3d %-4d %-6s %-2s %6.2f %8d %10.2f %12.2f %12s %4.2f %4.2f %10.2f";
+    private static final String TAXES_ONLY = "%71s %15s";
 
     private void feedSaleData(PdfWriter writer) throws IOException, DocumentException {
         Font customerDetailsLabelFont = FontFactory.getFont(FontFactory.COURIER_BOLD, InvoiceConstants.CUSTOMER_INVOICE_FONT_SIZE, BaseColor.BLACK);
@@ -132,8 +129,8 @@ public class PDFWriter {
         ct.setSimpleColumn(new Rectangle(InvoiceConstants.INVOICE_BOX_MIN_X + InvoiceConstants.MARGIN, InvoiceConstants.SALE_BOX_MIN_Y,
                 InvoiceConstants.INVOICE_BOX_MAX_X - InvoiceConstants.MARGIN, InvoiceConstants.SALE_BOX_MAX_Y));
         Phrase saleDetailsPhrase = new Phrase();
-        String tag = String.format(TAG_LINE, Constants.SNO, Constants.CODE, Constants.DESCRIPTION_TAG, Constants.PRICE_TAG,
-                Constants.QUANTITY_STR, Constants.AMOUNT_STR, Constants.REBATE_STR, Constants.TAXABLE_AMOUNT_STR,
+        String tag = String.format(TAG_LINE, Constants.SNO, Constants.CODE, Constants.HSN_CODE_STR,Constants.DESCRIPTION_TAG, Constants.PRICE_TAG,
+                Constants.QUANTITY_STR, Constants.AMOUNT_STR, Constants.TAXABLE_AMOUNT_STR,
                 Constants.TAXES_STR, Constants.CGST_STR, Constants.SGST_STR, Constants.FINAL_STR);
         Chunk chkSaleDetail = new Chunk(tag, customerDetailsLabelFont);
         saleDetailsPhrase.add(chkSaleDetail);
@@ -150,8 +147,8 @@ public class PDFWriter {
             SaleReport srep = sr.get(i);
             Product prd = productMap.get(srep.getProductId());
             String[] applicableTaxes = prd.getApplicableTaxes().split(Constants.LINE_FEED_CHAR);
-            Phrase chkSaleRec = new Phrase(String.format(INVOICE_STATEMENTS, i + 1, prd.getId(), prd.getTag(), srep.getPrice(),
-                    srep.getQuantity(), srep.getAmount(), srep.getRebate(), srep.getTaxableAmount(), applicableTaxes[0],
+            Phrase chkSaleRec = new Phrase(String.format(INVOICE_STATEMENTS, i + 1, prd.getId(), prd.getHsnCode(),prd.getTag(),srep.getPrice(),
+                    srep.getQuantity(), srep.getAmount(), srep.getTaxableAmount(), applicableTaxes[0],
                     srep.getCgst(), srep.getSgst(), srep.getFinalAmount()), customerDetailsFont);
             ct.addElement(chkSaleRec);
             for (int cnt = 1; cnt < applicableTaxes.length; cnt++) {
@@ -284,21 +281,7 @@ public class PDFWriter {
     }
 
     public void createInvoice() throws IOException, DocumentException {
-        Document document = new Document();
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("iTextHelloWorld.pdf"));
-        document.open();
-        drawInvoiceBox(writer);
-        Rectangle margin = new Rectangle(InvoiceConstants.MIN_X, InvoiceConstants.MIN_Y,
-                InvoiceConstants.MAX_X, InvoiceConstants.MAX_Y);
-        document.setPageSize(margin);
-        document.setMargins(InvoiceConstants.MARGIN, InvoiceConstants.MARGIN, InvoiceConstants.MARGIN,
-                InvoiceConstants.MARGIN);
-        feedOwnerData(document, writer);
-        feedCustomerData(writer);
-        feedCustomerMetaData(writer);
-        feedSaleData(writer);
-        feedTotalBox(writer);
-        document.close();
+        com.nambissians.billing.utils.PDFWriter.createInvoice(ownerProfile, saleRecord, products,"/Users/SajiV/Desktop/Files");
     }
 
     public void drawInvoiceBox(PdfWriter writer) {

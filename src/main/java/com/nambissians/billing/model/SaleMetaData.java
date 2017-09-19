@@ -33,7 +33,10 @@ public class SaleMetaData {
     private String uuid;
     private String transportationMode;
     private Timestamp timestamp;
+    private String customerName;
     private Long id;
+    private String printableInvoiceNumber;
+    private boolean gstBill;
 
     public Long getId() {
         return id;
@@ -107,6 +110,30 @@ public class SaleMetaData {
         this.transportationMode = transportationMode;
     }
 
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getPrintableInvoiceNumber() {
+        return printableInvoiceNumber;
+    }
+
+    public void setPrintableInvoiceNumber(String printableInvoiceNumber) {
+        this.printableInvoiceNumber = printableInvoiceNumber;
+    }
+
+    public boolean isGstBill() {
+        return gstBill;
+    }
+
+    public void setGstBill(boolean gstBill) {
+        this.gstBill = gstBill;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("SaleMetaData{");
@@ -118,7 +145,10 @@ public class SaleMetaData {
         sb.append(", uuid='").append(uuid).append('\'');
         sb.append(", transportationMode='").append(transportationMode).append('\'');
         sb.append(", timestamp=").append(timestamp);
+        sb.append(", customerName='").append(customerName).append('\'');
         sb.append(", id=").append(id);
+        sb.append(", printableInvoiceNumber='").append(printableInvoiceNumber).append('\'');
+        sb.append(", gstBill=").append(gstBill);
         sb.append('}');
         return sb.toString();
     }

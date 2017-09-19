@@ -35,7 +35,52 @@ public class NewCustomerTitledChangeListener extends AbstractTitledPaneChangeLis
         super(pane);
     }
 
-    protected void populateGridPane(GridPane gridPane) {
+    protected GridPane populateCustomerDetailsSection() {
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+
+        Label lblName = new Label();
+        lblName.setText(InternationalizationUtil.getString(Constants.NAME));
+        TextField txtCustomerName = new TextField();
+        txtCustomerName.setText(Constants.EMPTY_STRING);
+        gridPane.add(lblName, 0, 1);
+        gridPane.add(txtCustomerName, 1, 1);
+
+        Label lblAddress = new Label();
+        lblAddress.setText(InternationalizationUtil.getString(Constants.ADDRESS));
+        TextArea txtAddress = new TextArea();
+        txtAddress.setText(Constants.EMPTY_STRING);
+        txtAddress.setMaxHeight(75);
+        gridPane.add(lblAddress, 0, 2);
+        gridPane.add(txtAddress, 1, 2);
+
+        Label lblGSTIN = new Label();
+        lblGSTIN.setText(InternationalizationUtil.getString(Constants.GSTIN));
+        TextField txtGSTIN = new TextField();
+        txtGSTIN.setText(Constants.EMPTY_STRING);
+        gridPane.add(lblGSTIN, 0, 3);
+        gridPane.add(txtGSTIN, 1, 3);
+
+        Label lblTel = new Label();
+        lblTel.setText(InternationalizationUtil.getString(Constants.TEL));
+        TextField txtTel = new TextField();
+        txtTel.setText(Constants.EMPTY_STRING);
+        gridPane.add(lblTel, 0, 4);
+        gridPane.add(txtTel, 1, 4);
+
+        Label lblEmail = new Label();
+        lblEmail.setText(InternationalizationUtil.getString(Constants.EMAIL));
+        TextField txtEmail = new TextField();
+        txtEmail.setText(Constants.EMPTY_STRING);
+        gridPane.add(lblEmail, 0, 5);
+        gridPane.add(txtEmail, 1, 5);
+        return gridPane;
+    }
+
+    protected GridPane populateGridPane(TitledPane pane) {
+        GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setHgap(10);
         gridPane.setVgap(10);
@@ -80,17 +125,17 @@ public class NewCustomerTitledChangeListener extends AbstractTitledPaneChangeLis
         btnSave.setOnAction(new SaveCustomerButtonHandler(txtCustomerName, txtAddress, txtGSTIN, txtTel, txtEmail));
         gridPane.add(btnSave, 0, 6);
         btnSave.setDefaultButton(true);
-    }
 
-    @Override
-    protected void populatePane(TitledPane pane) {
-        GridPane gridPane = new GridPane();
-        pane.setContent(gridPane);
-        populateGridPane(gridPane);
         Button btnCancel = new Button(InternationalizationUtil.getString(Constants.CANCEL));
         btnCancel.setOnAction(new CancelButtonTitledHandler(pane));
         btnCancel.setCancelButton(true);
         gridPane.add(btnCancel, 1, 6);
+        return gridPane;
+    }
+
+    @Override
+    protected void populatePane(TitledPane pane) {
+        pane.setContent(populateGridPane(pane));
     }
 
 }

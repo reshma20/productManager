@@ -78,10 +78,10 @@ public class CustomerServiceImpl {
             connection.setReadOnly(true);
             switch (searchType) {
                 case ID:
-                    if(StringUtils.isLongVal(searchString)) {
+                    if (StringUtils.isLongVal(searchString)) {
                         customers = customerDao.getCustomerByID(connection, Long.valueOf(searchString));
                     } else {
-                        notified=true;
+                        notified = true;
                         NotificationUtils.showError(InternationalizationUtil.getString(Constants.ERR_NON_NUMERIC_ID));
                     }
                     break;
@@ -96,7 +96,7 @@ public class CustomerServiceImpl {
                     NotificationUtils.showError(InternationalizationUtil.getString(Constants.ERR_SEACH_MECHANISM_NOT_IMPLEMENTED));
             }
             DBConnectionUtils.commitTransaction(connection);
-            if(customers.isEmpty() && (notified == false)) {
+            if (customers.isEmpty() && (notified == false)) {
                 NotificationUtils.showWarn(InternationalizationUtil.getString(Constants.ERR_NO_MATCHING_CUSTOMER));
             }
             return customers;
@@ -104,6 +104,25 @@ public class CustomerServiceImpl {
             logger.error("Couldn't get owner profile", exp);
             NotificationUtils.showError(InternationalizationUtil.getString(Constants.ERR_COULD_NOT_GET_CUSTOMER_LIST));
             return new ArrayList<>();
+        }
+    }
+
+    public boolean saveCustomer(Customer customer) {
+        try {
+            Connection connection = DBConnectionUtils.getConnection();
+            if (customerDao.saveCustomer(connection, customer)) {
+                NotificationUtils.showMessage(InternationalizationUtil.getString(Constants.MSG_SAVED_CUSTOMER));
+                DBConnectionUtils.commitTransaction(connection);
+                return true;
+            } else {
+                NotificationUtils.showError(InternationalizationUtil.getString(Constants.ERR_COULD_NOT_SAVE_CUSTOMER));
+                DBConnectionUtils.rollbackTransaction(connection);
+                return false;
+            }
+        } catch (SQLException exp) {
+            logger.error("Could not save customer {}", customer, exp);
+            NotificationUtils.showError(InternationalizationUtil.getString(Constants.ERR_COULD_NOT_SAVE_CUSTOMER));
+            return false;
         }
     }
 }

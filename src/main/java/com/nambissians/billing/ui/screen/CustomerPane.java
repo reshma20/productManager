@@ -1,6 +1,7 @@
 package com.nambissians.billing.ui.screen;
 
 
+import com.nambissians.billing.ui.handlers.customer.EditCustomerTitledChangeListener;
 import com.nambissians.billing.ui.handlers.customer.ViewCustomerTitledChangeListener;
 import com.nambissians.billing.utils.Constants;
 import com.nambissians.billing.utils.InternationalizationUtil;
@@ -44,11 +45,16 @@ public class CustomerPane extends TitlePaneGenerator {
         TitledPane newPane = new TitledPane();
         newPane.setText(InternationalizationUtil.getString(Constants.NEW));
         newPane.expandedProperty().addListener(new NewCustomerTitledChangeListener(newPane));
+
+        TitledPane editPane = new TitledPane();
+        editPane.setText(InternationalizationUtil.getString(Constants.EDIT));
+        editPane.expandedProperty().addListener(new EditCustomerTitledChangeListener(editPane));
+
         TitledPane listPane = new TitledPane();
         listPane.setText(InternationalizationUtil.getString(Constants.LIST));
         listPane.setMinHeight(700);
         listPane.expandedProperty().addListener(new ViewCustomerTitledChangeListener(listPane, null, false, true));
-        subRoot.getPanes().addAll(newPane, listPane);
+        subRoot.getPanes().addAll(newPane, listPane, editPane);
         customerPane.setContent(subRoot);
         return customerPane;
     }

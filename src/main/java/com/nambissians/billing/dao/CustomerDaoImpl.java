@@ -72,6 +72,20 @@ public class CustomerDaoImpl {
         return customers;
     }
 
+    private static final String SAVE_CUSTOMER = "UPDATE customer SET name = UPPER(?), address=?, gstin=?, tel=?, email=? WHERE id = ?";
+    public boolean saveCustomer(Connection connection, Customer customer) throws SQLException {
+        PreparedStatement pstmt = connection.prepareStatement(SAVE_CUSTOMER);
+        pstmt.setString(1, customer.getCustomerName());
+        pstmt.setString(2, customer.getAddress());
+        pstmt.setString(3, customer.getGstin());
+        pstmt.setString(4, customer.getTel());
+        pstmt.setString(5, customer.getEmail());
+        pstmt.setLong(6, customer.getId());
+        int res = pstmt.executeUpdate();
+        pstmt.close();
+        return (res != 0);
+    }
+
     private static final String GET_CUSTOMERS_BY_TEL = "SELECT id, name, address, gstin, tel, email, createDate FROM customer WHERE tel LIKE UPPER(?)";
     public List<Customer> getCustomerByTel(Connection connection, String tel) throws SQLException{
         String tempTel = Constants.WILD_CARD_FOR_ANY+tel+Constants.WILD_CARD_FOR_ANY;

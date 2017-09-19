@@ -1,16 +1,18 @@
-package com.nambissians.billing.ui.screen;/**
+package com.nambissians.billing.ui.handlers.customer;/**
  * Created by SajiV on 09/09/17.
  */
 
 import com.nambissians.billing.model.Customer;
 import com.nambissians.billing.model.CustomerSearchType;
 import com.nambissians.billing.service.CustomerServiceImpl;
+import com.nambissians.billing.ui.screen.CustomerSearchEventHandler;
+import com.nambissians.billing.ui.screen.SingleCustomerSelectionWindow;
 import com.nambissians.billing.utils.Constants;
 import com.nambissians.billing.utils.InternationalizationUtil;
 import com.nambissians.billing.utils.NotificationUtils;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 import java.util.List;
@@ -34,7 +36,7 @@ import java.util.List;
  * Redistribution and use in source and binary forms, without permission
  * from copyright owner is not permited.
  **/
-public class CustomerSearchEventHandler implements EventHandler<ActionEvent> {
+public class EditCustomerSearchEventHandler extends CustomerSearchEventHandler {
     private Customer selectedCustomer;
     private CustomerServiceImpl customerService = new CustomerServiceImpl();
     private ComboBox<CustomerSearchType> cmbSearchBy;
@@ -42,14 +44,21 @@ public class CustomerSearchEventHandler implements EventHandler<ActionEvent> {
     private TextField txtCustomerName;
     private TextField txtID;
     private TextField txtTel;
+    private TextField txtGSTIN;
+    private TextArea txtAddress;
+    private TextField txtEmail;
 
-    public CustomerSearchEventHandler(ComboBox<CustomerSearchType> cmbSearchBy, TextField txtSearchContent, TextField txtCustomerName,
-                                      TextField txtID, TextField txtTel) {
+    public EditCustomerSearchEventHandler(ComboBox<CustomerSearchType> cmbSearchBy, TextField txtSearchContent, TextField txtCustomerName,
+                                          TextField txtID, TextField txtTel, TextArea txtAddress, TextField txtGSTIN, TextField txtEmail) {
+        super(cmbSearchBy, txtSearchContent, txtCustomerName, txtID, txtTel);
         this.cmbSearchBy = cmbSearchBy;
         this.txtSearchContent = txtSearchContent;
         this.txtCustomerName = txtCustomerName;
         this.txtID = txtID;
         this.txtTel = txtTel;
+        this.txtAddress = txtAddress;
+        this.txtGSTIN = txtGSTIN;
+        this.txtEmail = txtEmail;
     }
 
     @Override
@@ -64,12 +73,17 @@ public class CustomerSearchEventHandler implements EventHandler<ActionEvent> {
             txtCustomerName.setText(selectedCustomer.getCustomerName());
             txtID.setText(selectedCustomer.getId() + Constants.EMPTY_STRING);
             txtTel.setText(selectedCustomer.getTel());
+            txtAddress.setText(selectedCustomer.getAddress());
+            txtGSTIN.setText(selectedCustomer.getGstin());
+            txtEmail.setText(selectedCustomer.getEmail());
         } else if (matchingCustomers.size() == 1) {
             selectedCustomer = matchingCustomers.get(0);
-
             txtCustomerName.setText(selectedCustomer.getCustomerName());
             txtID.setText(selectedCustomer.getId() + Constants.EMPTY_STRING);
             txtTel.setText(selectedCustomer.getTel());
+            txtAddress.setText(selectedCustomer.getAddress());
+            txtGSTIN.setText(selectedCustomer.getGstin());
+            txtEmail.setText(selectedCustomer.getEmail());
         } else {
             NotificationUtils.showWarn(InternationalizationUtil.getString(Constants.ERR_NO_MATCHING_CUSTOMER));
         }

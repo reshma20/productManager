@@ -39,6 +39,7 @@ public interface Constants {
     String PRICE = "price";
     String EMPTY_STRING = "";
     String NEW = "new";
+    String EDIT = "edit";
     String LIST = "list";
     String PRODUCT = "product";
     String TAX_SEPARATOR = ",\n";
@@ -73,11 +74,15 @@ public interface Constants {
     String ERR_COULD_NOT_SAVE_CUSTOMER = "ERR_COULD_NOT_SAVE_CUSTOMER";
     String ERR_COULD_NOT_SAVE_INVOICE = "ERR_COULD_NOT_SAVE_INVOICE";
     String ERR_COULD_NOT_GENERATE_INVOICE = "ERR_COULD_NOT_GENERATE_INVOICE";
+    String ERR_COULD_NOT_GET_SALES_REPORT = "ERR_COULD_NOT_GET_SALES_REPORT";
     String ERR_NO_PRODUCT_SELECTED_FOR_INVOICE = "ERR_NO_PRODUCT_SELECTED";
+    String ERR_COULD_NOT_GENERATE_REPORT = "ERR_COULD_NOT_GENERATE_REPORT";
     String ERR_GEN_INVOICE = "ERR_GEN_INVOICE";
     String ERR_PRINTING_INVOICE = "ERR_PRINTING_INVOICE";
     String ERR_REBATE_NOT_VALID = "ERR_REBATE_NOT_VALID";
     String MSG_SAVED_CUSTOMER="MSG_SAVED_CUSTOMER";
+    String MSG_PROFILE_SAVED="MSG_PROFILE_SAVED";
+    String ERR_PROFILE_SAVED="ERR_PROFILE_SAVED";
     String MSG_SAVED_INVOICE = "MSG_SAVED_INVOICE";
     String SELECT_CUSTOMER ="selectCustomer";
     String SELECT_PRODUCT ="selectProduct";
@@ -89,7 +94,7 @@ public interface Constants {
     String PRODUCT_TAG="productTag";
     int TITLED_HEIGHT = 600;
     int TITLED_WIDTH = 1200;
-    int SALE_REPORT_HEIGHT=275;
+    int SALE_REPORT_HEIGHT=175;
     String P_CODE ="productId";
     String P_NAME ="productName";
     String AMOUNT = "amount";
@@ -142,6 +147,7 @@ public interface Constants {
     String DESCRIPTION_TAG = "Description";
     String PRICE_TAG = "Price";
     String GST_INVOICE = "GST INVOICE";
+    String GST_BILL = "GST BILL";
     int TITLE_SPACE_Y = 50;
     int TITLE_SPACE_X = 50;
     String INVOICE_NUMBER = "Invoice Number : ";
@@ -160,12 +166,23 @@ public interface Constants {
     String TAXES_STR = "Taxes";
     String CGST_STR = "CGST";
     String SGST_STR = "SGST";
-    String FINAL_STR = "Final";
+    String FINAL_STR = "Total";
     String TOTAL_TAX_COLLECTED="%-17s : %12.2f";
-    String TOTAL_TAX = "Total tax";
+    String TOTAL_TAX = "totalTaxes";
     String TOTAL_BILL_AMOUNT="%-17s : %12.2f";
     String TOTAL_BILL = "Total Bill Amount";
     String AUTHORISED_SIGNATORY = "Authorised Signatory";
-    String INITIAL = "A";
+    String GST_INVOICE_INITIAL = "A";
+    String GST_BILL_INITIAL = "B";
+    String PRINTABLE_INVOICE_FORMAT = "%s%06d";
     String TRANSPORTATION_MODE_LABEL="transportationMode";
+    String FROM_DATE = "fromDate";
+    String TO_DATE = "toDate";
+    String TIMESTAMP = "timestamp";
+    String Export = "export";
+    String TRANSACTION_DATE = "transactionDate";
+    String TOTAL_AMOUNT = "totalAmount";
+    String TOTAL_TAXES_STR = "Total Taxes";
+    String HSN_CODE_STR = "HSN";
+    String PRINTABLE_INVOICE_NUMBER = "printableInvoiceNumber";
 }

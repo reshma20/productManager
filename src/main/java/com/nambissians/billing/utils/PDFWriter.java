@@ -8,15 +8,15 @@ import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.nambissians.billing.model.*;
-import com.nambissians.billing.service.ProductServiceImpl;
-import com.nambissians.billing.service.ProfileServiceImpl;
-import com.nambissians.billing.service.SaleReportServiceImpl;
 import com.nambissians.billing.service.StateServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * This is a copyright of the Brahmana food products
@@ -42,6 +42,7 @@ public class PDFWriter {
     private static final Chunk chkSpace = new Chunk(String.format("%5s", Constants.EMPTY_STRING));
     private static final String BASE_PATH_PROP = "invoicePath";
     private static StateServiceImpl stateService = new StateServiceImpl();
+    private static final Logger logger = LoggerFactory.getLogger(PDFWriter.class);
 
 
     private static void feedOwnerData(Document document, PdfWriter writer, OwnerProfile ownerProfile, SaleRecord saleRecord) throws IOException, DocumentException {
@@ -56,7 +57,12 @@ public class PDFWriter {
         Font customerDetailsFont = FontFactory.getFont(FontFactory.COURIER, InvoiceConstants.CUSTOMER_DETS_FONT_SIZE, BaseColor.BLACK);
         Font gstInvoicePhraseFont = FontFactory.getFont(FontFactory.COURIER_BOLD, InvoiceConstants.GST_INVOICE_FONT_SIZE, Font.UNDERLINE, BaseColor.BLACK);
         Chunk chkcustomerDetailsSpace = new Chunk(String.format("%20s", Constants.EMPTY_STRING), customerDetailsFont);
-        Chunk chkGstInvoice = new Chunk(Constants.GST_INVOICE, gstInvoicePhraseFont);
+        Chunk chkGstInvoice;
+        if (saleRecord.getCustomer().getGstin().isEmpty()) {
+            chkGstInvoice = new Chunk(Constants.GST_BILL, gstInvoicePhraseFont);
+        } else {
+            chkGstInvoice = new Chunk(Constants.GST_INVOICE, gstInvoicePhraseFont);
+        }
         gstInvoicePhrase.add(chkcustomerDetailsSpace);
         gstInvoicePhrase.add(chkGstInvoice);
         ct.addElement(gstInvoicePhrase);
@@ -86,8 +92,13 @@ public class PDFWriter {
         ColumnText ctNumber = new ColumnText(writer.getDirectContent());
         ctNumber.setSimpleColumn(new Rectangle(InvoiceConstants.INVOICE_NUMBER_BOX_MIN_X, InvoiceConstants.INVOICE_NUMBER_BOX_MIN_Y,
                 InvoiceConstants.INVOICE_NUMBER_BOX_MAX_X, InvoiceConstants.INVOICE_NUMBER_BOX_MAX_Y));
-        Font invoiceNumberFont = FontFactory.getFont(FontFactory.COURIER_BOLD, InvoiceConstants.COMPANY_ADDRESS_FONT_SIZE, BaseColor.RED);
-        String invoiceNumber = String.format("%-15s%s%06d", Constants.INVOICE_NUMBER, Constants.INITIAL,saleRecord.getSaleMetaData().getId());
+        Font invoiceNumberFont = FontFactory.getFont(FontFactory.COURIER_BOLD, InvoiceConstants.COMPANY_ADDRESS_FONT_SIZE, BaseColor.BLACK);
+        String invoiceNumber;
+        if (saleRecord.getCustomer().getGstin() == null || saleRecord.getCustomer().getGstin().isEmpty()) {
+            invoiceNumber = String.format("%-15s%s", Constants.INVOICE_NUMBER, Constants.GST_BILL_INITIAL, saleRecord.getSaleMetaData().getPrintableInvoiceNumber());
+        } else {
+            invoiceNumber = String.format("%-15s%s%06d", Constants.INVOICE_NUMBER, Constants.GST_INVOICE_INITIAL, saleRecord.getSaleMetaData().getPrintableInvoiceNumber());
+        }
         Chunk invoiceNumberChunk = new Chunk(invoiceNumber, invoiceNumberFont);
         ctNumber.addElement(invoiceNumberChunk);
         if (ownerProfile.getGstin() != null && (ownerProfile.getGstin().isEmpty() == false)) {
@@ -100,9 +111,9 @@ public class PDFWriter {
         document.add(titlePhrase);
     }
 
-    private static final String TAG_LINE = "%-3s %-4s %-30s %-10s %-12s %-6s %-6s %-15s %-8s %-6s %-5s %15s";
-    private static final String INVOICE_STATEMENTS = "%3d %-4d %-30s %10.2f %8d %10.2f %06.2f %012.2f %10s %6.2f %6.2f %17.2f";
-    private static final String TAXES_ONLY = "%84s %15s";
+    private static final String TAG_LINE = "%-3s %-4s %-6s %-20s %-10s %-6s %-6s %-10s %8s %6s %6s %10s";
+    private static final String INVOICE_STATEMENTS = "%3d %-4d %-6s %-20s %6.2f %8d %10.2f %12.2f %12s %5.2f %5.2f %10.2f";
+    private static final String TAXES_ONLY = "%72s %15s";
 
     private static void feedSaleData(PdfWriter writer, SaleRecord saleRecord, List<Product> products) throws IOException, DocumentException {
         Font customerDetailsLabelFont = FontFactory.getFont(FontFactory.COURIER_BOLD, InvoiceConstants.CUSTOMER_INVOICE_FONT_SIZE, BaseColor.BLACK);
@@ -111,8 +122,8 @@ public class PDFWriter {
         ct.setSimpleColumn(new Rectangle(InvoiceConstants.INVOICE_BOX_MIN_X + InvoiceConstants.MARGIN, InvoiceConstants.SALE_BOX_MIN_Y,
                 InvoiceConstants.INVOICE_BOX_MAX_X - InvoiceConstants.MARGIN, InvoiceConstants.SALE_BOX_MAX_Y));
         Phrase saleDetailsPhrase = new Phrase();
-        String tag = String.format(TAG_LINE, Constants.SNO, Constants.CODE, Constants.DESCRIPTION_TAG, Constants.PRICE_TAG,
-                Constants.QUANTITY_STR, Constants.AMOUNT_STR, Constants.REBATE_STR, Constants.TAXABLE_AMOUNT_STR,
+        String tag = String.format(TAG_LINE, Constants.SNO, Constants.CODE, Constants.HSN_CODE_STR, Constants.DESCRIPTION_TAG, Constants.PRICE_TAG,
+                Constants.QUANTITY_STR, Constants.AMOUNT_STR, Constants.TAXABLE_AMOUNT_STR,
                 Constants.TAXES_STR, Constants.CGST_STR, Constants.SGST_STR, Constants.FINAL_STR);
         Chunk chkSaleDetail = new Chunk(tag, customerDetailsLabelFont);
         saleDetailsPhrase.add(chkSaleDetail);
@@ -129,8 +140,8 @@ public class PDFWriter {
             SaleReport srep = sr.get(i);
             Product prd = productMap.get(srep.getProductId());
             String[] applicableTaxes = prd.getApplicableTaxes().split(Constants.LINE_FEED_CHAR);
-            Phrase chkSaleRec = new Phrase(String.format(INVOICE_STATEMENTS, i + 1, prd.getId(), prd.getTag(), srep.getPrice(),
-                    srep.getQuantity(), srep.getAmount(), srep.getRebate(), srep.getTaxableAmount(), applicableTaxes[0],
+            Phrase chkSaleRec = new Phrase(String.format(INVOICE_STATEMENTS, i + 1, prd.getId(), prd.getHsnCode(), prd.getTag(), srep.getPrice(),
+                    srep.getQuantity(), srep.getAmount(), srep.getTaxableAmount(), applicableTaxes[0],
                     srep.getCgst(), srep.getSgst(), srep.getFinalAmount()), customerDetailsFont);
             ct.addElement(chkSaleRec);
             for (int cnt = 1; cnt < applicableTaxes.length; cnt++) {
@@ -176,11 +187,13 @@ public class PDFWriter {
         ct.addElement(customerAddressPhrase);
         //GSTIN
         Phrase customerDetailPhrase = new Phrase();
-        Chunk chkLblGSTIN = new Chunk(Constants.GST_IN_CUSTOMER_STR, customerDetailsLabelFont);
-        Chunk chkCustomerGSTIN = new Chunk(saleRecord.getCustomer().getGstin(), customerDetailsFont);
-        customerDetailPhrase.add(chkLblGSTIN);
-        customerDetailPhrase.add(chkCustomerGSTIN);
-        customerDetailPhrase.add(chkSpace);
+        if (saleRecord.getCustomer().getGstin() != null && (saleRecord.getCustomer().getGstin().isEmpty() != true)) {
+            Chunk chkLblGSTIN = new Chunk(Constants.GST_IN_CUSTOMER_STR, customerDetailsLabelFont);
+            Chunk chkCustomerGSTIN = new Chunk(saleRecord.getCustomer().getGstin(), customerDetailsFont);
+            customerDetailPhrase.add(chkLblGSTIN);
+            customerDetailPhrase.add(chkCustomerGSTIN);
+            customerDetailPhrase.add(chkSpace);
+        }
         //Tel
         Chunk chkLblCustomerTel = new Chunk(Constants.TEL_STR, customerDetailsLabelFont);
         Chunk cukCustomerTel = new Chunk(saleRecord.getCustomer().getTel(), customerDetailsFont);
@@ -243,20 +256,20 @@ public class PDFWriter {
         ct.go();
     }
 
-    public static void feedTotalBox(PdfWriter writer, SaleRecord saleRecord) throws IOException, DocumentException{
+    public static void feedTotalBox(PdfWriter writer, SaleRecord saleRecord) throws IOException, DocumentException {
         Font customerDetailsFont = FontFactory.getFont(FontFactory.COURIER_BOLD, InvoiceConstants.GST_INVOICE_FONT_SIZE, BaseColor.BLACK);
         ColumnText ct = new ColumnText(writer.getDirectContent());
         ct.setSimpleColumn(new Rectangle(InvoiceConstants.TOTAL_BOX_MIN_X, InvoiceConstants.TOTAL_BOX_MIN_Y,
                 InvoiceConstants.TOTAL_BOX_MAX_X, InvoiceConstants.TOTAL_BOX_MAX_Y));
-        Phrase totalTaxPhrase = new Phrase(String.format(Constants.TOTAL_TAX_COLLECTED, Constants.TOTAL_TAX,saleRecord.getSaleMetaData().getTotalTaxes()), customerDetailsFont);
-        Phrase totalBillPhrase = new Phrase(String.format(Constants.TOTAL_BILL_AMOUNT, Constants.TOTAL_BILL,saleRecord.getSaleMetaData().getTotalAmount()), customerDetailsFont);
+        Phrase totalTaxPhrase = new Phrase(String.format(Constants.TOTAL_TAX_COLLECTED, Constants.TOTAL_TAXES_STR, saleRecord.getSaleMetaData().getTotalTaxes()), customerDetailsFont);
+        Phrase totalBillPhrase = new Phrase(String.format(Constants.TOTAL_BILL_AMOUNT, Constants.TOTAL_BILL, saleRecord.getSaleMetaData().getTotalAmount()), customerDetailsFont);
         ct.addElement(totalTaxPhrase);
         ct.addElement(totalBillPhrase);
         Phrase emptyRec = new Phrase(String.format("%5s", Constants.EMPTY_STRING), customerDetailsFont);
         ct.addElement(emptyRec);
         ct.addElement(emptyRec);
         ct.addElement(emptyRec);
-        Phrase authorisedSignatory = new Phrase(String.format("%5s%s",Constants.EMPTY_STRING, Constants.AUTHORISED_SIGNATORY), customerDetailsFont);
+        Phrase authorisedSignatory = new Phrase(String.format("%5s%s", Constants.EMPTY_STRING, Constants.AUTHORISED_SIGNATORY), customerDetailsFont);
         ct.addElement(authorisedSignatory);
         ct.go();
 
@@ -275,11 +288,11 @@ public class PDFWriter {
         canvas.moveTo(InvoiceConstants.INVOICE_BOX_MIN_X, InvoiceConstants.OWNER_PROFILE_Y);
         canvas.lineTo(InvoiceConstants.INVOICE_BOX_MAX_X, InvoiceConstants.OWNER_PROFILE_Y);
         canvas.closePathStroke();
-
-        canvas.moveTo(InvoiceConstants.INVOICE_BOX_MIN_X, InvoiceConstants.SALES_BOX_Y);
-        canvas.lineTo(InvoiceConstants.INVOICE_BOX_MAX_X, InvoiceConstants.SALES_BOX_Y);
-        canvas.closePathStroke();
-
+//
+//        canvas.moveTo(InvoiceConstants.INVOICE_BOX_MIN_X, InvoiceConstants.SALES_BOX_Y);
+//        canvas.lineTo(InvoiceConstants.INVOICE_BOX_MAX_X, InvoiceConstants.SALES_BOX_Y);
+//        canvas.closePathStroke();
+//
         canvas.moveTo(InvoiceConstants.INVOICE_BOX_MIN_X, InvoiceConstants.SALE_BOX_HEADER_Y);
         canvas.lineTo(InvoiceConstants.INVOICE_BOX_MAX_X, InvoiceConstants.SALE_BOX_HEADER_Y);
         canvas.closePathStroke();
@@ -289,8 +302,15 @@ public class PDFWriter {
         canvas.closePathStroke();
     }
 
-    private static String createInvoice(OwnerProfile ownerProfile, SaleRecord saleRecord, List<Product> products, String basePath) throws IOException, DocumentException {
-        String filePath = String.format("%s%s%s%06d",basePath,File.separator,Constants.INITIAL,saleRecord.getSaleMetaData().getId());
+    public static String createInvoice(OwnerProfile ownerProfile, SaleRecord saleRecord, List<Product> products, String basePath) throws IOException, DocumentException {
+        String initial;
+        logger.debug("SaleRecord : {}", saleRecord);
+        if (saleRecord.getCustomer().getGstin() == null || saleRecord.getCustomer().getGstin().isEmpty()) {
+            initial = Constants.GST_BILL_INITIAL;
+        } else {
+            initial = Constants.GST_INVOICE_INITIAL;
+        }
+        String filePath = String.format("%s%s.pdf", basePath, File.separator, initial, saleRecord.getSaleMetaData().getPrintableInvoiceNumber());
         Document document = new Document();
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
         document.open();
@@ -308,9 +328,14 @@ public class PDFWriter {
         document.close();
         return filePath;
     }
+
     public static String generatePdfInvoice(OwnerProfile ownerProfile, SaleRecord saleRecord, List<Product> products)
             throws IOException, DocumentException {
         String basePath = System.getProperty(BASE_PATH_PROP);
         return createInvoice(ownerProfile, saleRecord, products, basePath);
+    }
+
+    public static String createInvoiceReport(List<SaleRecord> saleRecords, String date, List<Product> products, OwnerProfile ownerProfile) {
+        return null;
     }
 }

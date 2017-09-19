@@ -71,9 +71,9 @@ public class SearchInvoiceButtonHandler implements EventHandler<ActionEvent> {
         table.setMinHeight(Constants.TITLED_HEIGHT);
         table.setMinWidth(Constants.TITLED_WIDTH);
 
-        TableColumn id = new TableColumn(InternationalizationUtil.getString(Constants.ID));
-        id.setCellValueFactory(new PropertyValueFactory<SaleMetaData, Long>(Constants.ID));
-        id.prefWidthProperty().bind(table.widthProperty().divide(20));
+        TableColumn id = new TableColumn(InternationalizationUtil.getString(Constants.PRINTABLE_INVOICE_NUMBER));
+        id.setCellValueFactory(new PropertyValueFactory<SaleMetaData, String>(Constants.PRINTABLE_INVOICE_NUMBER));
+        id.prefWidthProperty().bind(table.widthProperty().divide(10));
         TableColumn transactionDate = new TableColumn(InternationalizationUtil.getString(Constants.TRANSACTION_DATE));
         transactionDate.setCellValueFactory(new PropertyValueFactory<SaleMetaData, String>(Constants.TIMESTAMP));
         transactionDate.prefWidthProperty().bind(table.widthProperty().divide(8));
