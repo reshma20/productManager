@@ -2,7 +2,10 @@ package com.nambissians.billing.service;/**
  * Created by SajiV on 10/09/17.
  */
 
+import com.nambissians.billing.dao.ProductDaoImpl;
 import com.nambissians.billing.dao.SaleReportDaoImpl;
+import com.nambissians.billing.model.Product;
+import com.nambissians.billing.model.SaleMetaData;
 import com.nambissians.billing.model.SaleRecord;
 import com.nambissians.billing.utils.Constants;
 import com.nambissians.billing.utils.DBConnectionUtils;
@@ -13,6 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is a copyright of the Brahmana food products
@@ -37,21 +43,17 @@ public class SaleReportServiceImpl {
 
     private static final Logger logger = LoggerFactory.getLogger(SaleReportServiceImpl.class);
     private SaleReportDaoImpl saleReportDao = new SaleReportDaoImpl();
+    private ProductDaoImpl productDao = new ProductDaoImpl();
 
     public boolean persist(SaleRecord saleRecord) {
         try {
             //Assumption : There is only one profile at a time.
             if (saleRecord.getBreakUp() != null && (saleRecord.getBreakUp().isEmpty() == false)) {
                 Connection connection = DBConnectionUtils.getConnection();
-                boolean success = saleReportDao.saveSaleInvoice(connection, saleRecord);
-
-                if (success) {
-                    NotificationUtils.showMessage(InternationalizationUtil.getString(Constants.MSG_SAVED_INVOICE));
-                    return DBConnectionUtils.commitTransaction(connection);
-                } else {
-                    NotificationUtils.showError(InternationalizationUtil.getString(Constants.ERR_COULD_NOT_SAVE_INVOICE));
-                    return DBConnectionUtils.rollbackTransaction(connection);
-                }
+                boolean gstBill = saleReportDao.saveSaleInvoice(connection, saleRecord);
+                NotificationUtils.showMessage(InternationalizationUtil.getString(Constants.MSG_SAVED_INVOICE));
+                DBConnectionUtils.commitTransaction(connection);
+                return gstBill;
             } else {
                 NotificationUtils.showWarn(InternationalizationUtil.getString(Constants.ERR_NO_PRODUCT_SELECTED_FOR_INVOICE));
             }
@@ -62,10 +64,11 @@ public class SaleReportServiceImpl {
         return false;
     }
 
-    public SaleRecord getSaleRecord(String udid) {
+    public SaleRecord getSaleRecord(String udid, boolean gstBill) {
         try {
             Connection connection = DBConnectionUtils.getConnection();
-            SaleRecord sr = saleReportDao.getSaleRecord(connection, udid);
+            List<Product> products = productDao.getAllProducts(connection);
+            SaleRecord sr = saleReportDao.getSaleRecord(connection, udid, gstBill, products);
             DBConnectionUtils.commitTransaction(connection);
             return sr;
         } catch (Exception exp) {
@@ -73,5 +76,49 @@ public class SaleReportServiceImpl {
             NotificationUtils.showError(InternationalizationUtil.getString(Constants.ERR_COULD_NOT_GENERATE_INVOICE));
         }
         return null;
+    }
+
+    public List<SaleMetaData> getSales(Timestamp fromDate, Timestamp toDate) {
+        try {
+            Connection connection = DBConnectionUtils.getConnection();
+            List<SaleMetaData> sr = saleReportDao.getSaleReport(connection, fromDate, toDate);
+            DBConnectionUtils.commitTransaction(connection);
+            return sr;
+        } catch (Exception exp) {
+            logger.error("Error while getting sale report. Please try again later", exp);
+            NotificationUtils.showError(InternationalizationUtil.getString(Constants.ERR_COULD_NOT_GET_SALES_REPORT));
+            return new ArrayList<>();
+        }
+    }
+
+    public SaleRecord getSaleRecord(String initial, Long id) {
+        try {
+            Connection connection = DBConnectionUtils.getConnection();
+            List<Product> products = productDao.getAllProducts(connection);
+            SaleRecord saleRecord = saleReportDao.getSaleRecord(connection, initial, id, products);
+            DBConnectionUtils.commitTransaction(connection);
+            return saleRecord;
+        } catch (Exception exp) {
+            logger.error("Error while getting sale report. Please try again later", exp);
+            NotificationUtils.showError(InternationalizationUtil.getString(Constants.ERR_COULD_NOT_GET_RECORD));
+            return new SaleRecord();
+        }
+    }
+
+    public boolean editSalesReport(SaleRecord saleRecord) {
+        Connection connection = null;
+        try {
+            connection = DBConnectionUtils.getConnection();
+            if (saleReportDao.editSalesReport(connection, saleRecord)) {
+                return DBConnectionUtils.commitTransaction(connection);
+            } else {
+                DBConnectionUtils.rollbackTransaction(connection);
+                return false;
+            }
+        } catch (Exception exp) {
+            logger.error("Error while getting sale report. Please try again later", exp);
+            NotificationUtils.showError(InternationalizationUtil.getString(Constants.ERR_COULD_NOT_UPDATE_SALERECORD));
+            return false;
+        }
     }
 }

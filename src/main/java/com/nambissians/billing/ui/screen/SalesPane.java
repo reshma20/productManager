@@ -1,8 +1,8 @@
 package com.nambissians.billing.ui.screen;
 
 
-import com.nambissians.billing.ui.handlers.sales.EditSalesHandler;
-import com.nambissians.billing.ui.handlers.sales.NewSalesHandler;
+import com.nambissians.billing.ui.handlers.sales.EditSalesTitledHandler;
+import com.nambissians.billing.ui.handlers.sales.ListSalesTitledPane;
 import com.nambissians.billing.ui.handlers.sales.NewSalesTitledHandler;
 import com.nambissians.billing.utils.Constants;
 import com.nambissians.billing.utils.InternationalizationUtil;
@@ -48,25 +48,21 @@ public class SalesPane extends TitlePaneGenerator {
         subRoot.setMinWidth(Constants.TITLED_WIDTH);
         scrlPane.setContent(subRoot);
         subRoot.setPadding(new Insets(0, 0, 0, 10));
-        TitledPane newPane = new NewSalesHandler(InternationalizationUtil.getString(Constants.NEW)).handle();
+        TitledPane newPane = new TitledPane();
+        newPane.setText(InternationalizationUtil.getString(Constants.NEW));
         newPane.expandedProperty().addListener(new NewSalesTitledHandler(newPane));
 
-        TitledPane listPane = new EditSalesHandler(InternationalizationUtil.getString(Constants.LIST)).handle();
+        TitledPane listPane = new TitledPane();
+        listPane.setText(InternationalizationUtil.getString(Constants.LIST));
         listPane.expandedProperty().addListener(new ListSalesTitledPane(listPane));
-        subRoot.getPanes().addAll(newPane, listPane);
+
+        TitledPane editPane = new TitledPane();
+        editPane.setText(InternationalizationUtil.getString(Constants.EDIT));
+        editPane.expandedProperty().addListener(new EditSalesTitledHandler(editPane));
+
+        subRoot.getPanes().addAll(newPane, listPane, editPane);
         salesPane.setContent(scrlPane);
         return salesPane;
     }
 }
 
-class ListSalesTitledPane extends AbstractTitledPaneChangeListener {
-    public ListSalesTitledPane(TitledPane pane) {
-        super(pane);
-    }
-
-    @Override
-    protected void populatePane(TitledPane pane) {
-
-    }
-
-}

@@ -3,6 +3,7 @@ package com.nambissians.billing.utils;/**
  */
 
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 
 /**
  * This is a copyright of the Brahmana food products
@@ -24,16 +25,17 @@ import javafx.scene.control.Label;
  * from copyright owner is not permited.
  **/
 public class NotificationUtils {
-    private static NotificationUtils notificationUtl=null;
+    private static NotificationUtils notificationUtl = null;
     private static Label lblNotification;
-    private NotificationUtils (){
+
+    private NotificationUtils() {
         lblNotification = new Label();
     }
 
     public static NotificationUtils getInstance() {
-        if(notificationUtl == null) {
+        if (notificationUtl == null) {
             synchronized (NotificationUtils.class) {
-                if(notificationUtl == null) {
+                if (notificationUtl == null) {
                     notificationUtl = new NotificationUtils();
                 }
             }
@@ -42,20 +44,23 @@ public class NotificationUtils {
     }
 
     public static Label getLblNotificationLabel() {
-        return  getInstance().lblNotification;
+        return getInstance().lblNotification;
     }
 
     public static boolean showMessage(String message) {
+        lblNotification.setTextFill(Color.BLUE);
         lblNotification.setText(message);
         return true;
     }
 
     public static boolean showWarn(String message) {
+        lblNotification.setTextFill(Color.BROWN);
         lblNotification.setText(message);
         return true;
     }
 
     public static boolean showError(String message) {
+        lblNotification.setTextFill(Color.RED);
         lblNotification.setText(message);
         return true;
     }

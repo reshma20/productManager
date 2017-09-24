@@ -1,8 +1,7 @@
 package com.nambissians.billing.ui.handlers.sales;/**
- * Created by SajiV on 10/09/17.
+ * Created by SajiV on 22/09/17.
  */
 
-import com.nambissians.billing.ui.screen.CustomerSearchEventHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
@@ -25,21 +24,19 @@ import javafx.event.EventHandler;
  * Redistribution and use in source and binary forms, without permission
  * from copyright owner is not permited.
  **/
-public class ClearButtonHandler implements EventHandler<ActionEvent> {
+public class EditSalesClearButtonHandler implements EventHandler<ActionEvent> {
 
-    private CustomerSearchEventHandler customerSearchEventHandler;
-    private NewSalesTitledHandler newSalesTitledHandler;//AbstractTitledPaneChangeListener
+    private EditSalesTitledHandler editSalesTitledHandler;//AbstractTitledPaneChangeListener
 
-    public ClearButtonHandler(CustomerSearchEventHandler customerSearchEventHandler, NewSalesTitledHandler newSalesTitledHandler) {
-        this.customerSearchEventHandler = customerSearchEventHandler;
-        this.newSalesTitledHandler = newSalesTitledHandler;
+    public EditSalesClearButtonHandler(EditSalesTitledHandler editSalesTitledHandler) {
+        this.editSalesTitledHandler = editSalesTitledHandler;
     }
 
     @Override
     public void handle(ActionEvent event) {
-        customerSearchEventHandler.clearExistingCustomer();
-        newSalesTitledHandler.clearNewCustomer();
-        newSalesTitledHandler.clearData();
-        newSalesTitledHandler.clearSalesMetaData();
+        editSalesTitledHandler.clearNewCustomer();
+        editSalesTitledHandler.clearData();
+        editSalesTitledHandler.clearSalesMetaData();
+        //editSalesTitledHandler.setSaleRecord(null);
     }
 }

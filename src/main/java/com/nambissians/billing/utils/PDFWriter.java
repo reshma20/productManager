@@ -93,12 +93,8 @@ public class PDFWriter {
         ctNumber.setSimpleColumn(new Rectangle(InvoiceConstants.INVOICE_NUMBER_BOX_MIN_X, InvoiceConstants.INVOICE_NUMBER_BOX_MIN_Y,
                 InvoiceConstants.INVOICE_NUMBER_BOX_MAX_X, InvoiceConstants.INVOICE_NUMBER_BOX_MAX_Y));
         Font invoiceNumberFont = FontFactory.getFont(FontFactory.COURIER_BOLD, InvoiceConstants.COMPANY_ADDRESS_FONT_SIZE, BaseColor.BLACK);
-        String invoiceNumber;
-        if (saleRecord.getCustomer().getGstin() == null || saleRecord.getCustomer().getGstin().isEmpty()) {
-            invoiceNumber = String.format("%-15s%s", Constants.INVOICE_NUMBER, Constants.GST_BILL_INITIAL, saleRecord.getSaleMetaData().getPrintableInvoiceNumber());
-        } else {
-            invoiceNumber = String.format("%-15s%s%06d", Constants.INVOICE_NUMBER, Constants.GST_INVOICE_INITIAL, saleRecord.getSaleMetaData().getPrintableInvoiceNumber());
-        }
+        String invoiceNumber= String.format("%-15s%-10s", Constants.INVOICE_NUMBER, saleRecord.getSaleMetaData().getPrintableInvoiceNumber());
+
         Chunk invoiceNumberChunk = new Chunk(invoiceNumber, invoiceNumberFont);
         ctNumber.addElement(invoiceNumberChunk);
         if (ownerProfile.getGstin() != null && (ownerProfile.getGstin().isEmpty() == false)) {

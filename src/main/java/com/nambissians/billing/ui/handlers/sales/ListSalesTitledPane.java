@@ -2,27 +2,14 @@ package com.nambissians.billing.ui.handlers.sales;/**
  * Created by SajiV on 15/09/17.
  */
 
-import com.nambissians.billing.model.SaleMetaData;
-import com.nambissians.billing.service.SaleReportServiceImpl;
 import com.nambissians.billing.ui.screen.AbstractTitledPaneChangeListener;
 import com.nambissians.billing.utils.Constants;
-import com.nambissians.billing.utils.GridUtils;
 import com.nambissians.billing.utils.InternationalizationUtil;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 /**
  * This is a copyright of the Brahmana food products
@@ -49,7 +36,7 @@ public class ListSalesTitledPane extends AbstractTitledPaneChangeListener {
     }
 
     private VBox mainBox = new VBox();
-    private DatePicker fromDatePicker=new DatePicker();
+    private DatePicker fromDatePicker = new DatePicker();
     private DatePicker toDatePicker = new DatePicker();
 
 
@@ -64,7 +51,7 @@ public class ListSalesTitledPane extends AbstractTitledPaneChangeListener {
         Button export = new Button();
         btnSearch.setText(InternationalizationUtil.getString(Constants.SEARCH));
         mainBox.getChildren().add(searchBox);
-        SearchInvoiceButtonHandler handler = new SearchInvoiceButtonHandler(mainBox,fromDatePicker,toDatePicker);
+        SearchInvoiceButtonHandler handler = new SearchInvoiceButtonHandler(mainBox, fromDatePicker, toDatePicker);
         btnSearch.setOnAction(handler);
         btnSearch.setDefaultButton(true);
         export.setText(InternationalizationUtil.getString(Constants.Export));
@@ -76,7 +63,6 @@ public class ListSalesTitledPane extends AbstractTitledPaneChangeListener {
     @Override
     protected void populatePane(TitledPane pane) {
         ScrollPane scrlPane = new ScrollPane();
-        pane.setAlignment(Pos.CENTER);
         scrlPane.setMinHeight(Constants.TITLED_HEIGHT);
         scrlPane.setMinWidth(Constants.TITLED_WIDTH);
         populateSearchBox();

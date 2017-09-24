@@ -1,24 +1,16 @@
 package com.nambissians.billing.ui.screen;
 
 
-import com.nambissians.billing.model.Tax;
-import com.nambissians.billing.service.TaxServiceImpl;
-import com.nambissians.billing.ui.handlers.CancelButtonTitledHandler;
 import com.nambissians.billing.ui.handlers.product.EditProductHandler;
 import com.nambissians.billing.ui.handlers.product.NewProductHandler;
+import com.nambissians.billing.ui.handlers.product.NewProductTitledPaneChangeListener;
 import com.nambissians.billing.ui.handlers.product.ProductViewChangeListener;
-import com.nambissians.billing.ui.handlers.product.SaveProductButtonHandler;
 import com.nambissians.billing.utils.Constants;
 import com.nambissians.billing.utils.InternationalizationUtil;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.TitledPane;
 import javafx.stage.Stage;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This is a copyright of the Brahmana food products
@@ -63,79 +55,5 @@ public class ProductPane extends TitlePaneGenerator {
     }
 }
 
-class NewProductTitledPaneChangeListener extends AbstractTitledPaneChangeListener {
-    private TaxServiceImpl taxService = new TaxServiceImpl();
-
-    public NewProductTitledPaneChangeListener(TitledPane pane) {
-        super(pane);
-    }
-
-    @Override
-    protected void populatePane(TitledPane pane) {
-        pane.setMinWidth(Constants.TITLED_WIDTH);
-        pane.setMinHeight(Constants.TITLED_HEIGHT);
-        GridPane gridPane = new GridPane();
-        ScrollPane scrlPane = new ScrollPane();
-        scrlPane.setPadding(new Insets(10, 10, 10, 10));
-        pane.setContent(scrlPane);
-        scrlPane.setContent(gridPane);
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
-
-        Label lblTag = new Label();
-        lblTag.setText(InternationalizationUtil.getString(Constants.TAG));
-        TextField txtTag = new TextField();
-        txtTag.setText(Constants.EMPTY_STRING);
-        gridPane.add(lblTag, 0, 1);
-        gridPane.add(txtTag, 1, 1);
-
-        Label lblDesc = new Label();
-        lblDesc.setText(InternationalizationUtil.getString(Constants.DESCRIPTION));
-        TextArea txtDescription = new TextArea();
-        txtDescription.setText(Constants.EMPTY_STRING);
-        txtDescription.setMaxHeight(75);
-        gridPane.add(lblDesc, 0, 2);
-        gridPane.add(txtDescription, 1, 2);
-
-        Label lblHSNCode = new Label();
-        lblHSNCode.setText(InternationalizationUtil.getString(Constants.HSN_CODE));
-        TextField txtHSNCode = new TextField();
-        txtHSNCode.setText(Constants.EMPTY_STRING);
-        gridPane.add(lblHSNCode, 0, 3);
-        gridPane.add(txtHSNCode, 1, 3);
-
-        Label lblTaxes = new Label();
-        lblTaxes.setText(InternationalizationUtil.getString(Constants.TAXES));
-        List<Tax> taxes = taxService.getTaxes();
-        Map<String, Long> taxMap = new HashMap<>();
-        ListView lstTaxes = new ListView();
-        lstTaxes.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        lstTaxes.setMinHeight(100);
-        for (Tax tax : taxes) {
-            taxMap.put(tax.getTag(), tax.getId());
-            lstTaxes.getItems().add(tax.getTag());
-        }
-        gridPane.add(lblTaxes, 0, 4);
-        gridPane.add(lstTaxes, 1, 4);
-
-        Label lblPrice = new Label();
-        lblPrice.setText(InternationalizationUtil.getString(Constants.PRICE));
-        TextField txtPrice = new TextField();
-        txtPrice.setText(Constants.EMPTY_STRING);
-        gridPane.add(lblPrice, 0, 5);
-        gridPane.add(txtPrice, 1, 5);
-
-        Button btnSave = new Button(InternationalizationUtil.getString(Constants.SAVE));
-        btnSave.setOnAction(new SaveProductButtonHandler(txtTag, txtDescription, txtHSNCode, lstTaxes, txtPrice, taxMap));
-        gridPane.add(btnSave, 0, 6);
-        btnSave.setDefaultButton(true);
-
-        Button btnCancel = new Button(InternationalizationUtil.getString(Constants.CANCEL));
-        btnCancel.setOnAction(new CancelButtonTitledHandler(pane));
-        btnCancel.setCancelButton(true);
-        gridPane.add(btnCancel, 1, 6);
-    }
-}
 
 

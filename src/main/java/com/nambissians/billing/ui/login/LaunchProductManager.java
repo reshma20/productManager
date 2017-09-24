@@ -95,6 +95,7 @@ public class LaunchProductManager extends Application {
             System.out.println();
             props.load(input);
             props.putAll(System.getProperties());
+            //props.put(Constants.LOG4J_CONFIGURATION_FILE, args[0]);
             System.setProperties(props);
             launch(args);
         } catch (Exception exp) {

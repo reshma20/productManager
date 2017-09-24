@@ -36,7 +36,7 @@ public class SaleMetaData {
     private String customerName;
     private Long id;
     private String printableInvoiceNumber;
-    private boolean gstBill;
+    private Boolean gstBill;
 
     public Long getId() {
         return id;
@@ -126,11 +126,11 @@ public class SaleMetaData {
         this.printableInvoiceNumber = printableInvoiceNumber;
     }
 
-    public boolean isGstBill() {
+    public Boolean isGstBill() {
         return gstBill;
     }
 
-    public void setGstBill(boolean gstBill) {
+    public void setGstBill(Boolean gstBill) {
         this.gstBill = gstBill;
     }
 

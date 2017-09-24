@@ -19,7 +19,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 import java.util.List;
 
@@ -125,11 +124,12 @@ public class NewSalesTitledHandler extends AbstractTitledPaneChangeListener {
         return saleReportTable;
     }
 
-    private HBox populateProductDetBox() {
-        HBox productDetBox = new HBox();
+    private VBox populateProductDetBox() {
+        VBox productDetBox = new VBox();
         productDetBox.setSpacing(5);
         Label lblProduct = new Label(InternationalizationUtil.getString(Constants.PRODUCT_TAG));
         TextField txtProductName = new TextField();
+        txtProductName.setMinWidth(600);
         Label lblQuantity = new Label(InternationalizationUtil.getString(Constants.QUANTITY));
         TextField txtQuantity = new TextField();
         txtQuantity.setText(Constants.ONE);
@@ -143,7 +143,19 @@ public class NewSalesTitledHandler extends AbstractTitledPaneChangeListener {
         btnAdd.setDefaultButton(true);
         btnAdd.setText(InternationalizationUtil.getString(Constants.ADD));
         btnAdd.setOnAction(new AddProductHandler(productSearchEventHandler, data, lblTotal));
-        productDetBox.getChildren().addAll(lblProduct, txtProductName, btnSearchProduct, lblQuantity, txtQuantity, lblRebate, txtRebate, btnAdd);
+        Button btnRemove = new Button();
+        btnRemove.setText(InternationalizationUtil.getString(Constants.REMOVE));
+        //Clear handler
+        btnRemove.setOnAction(new RemoveProductHandler(saleReportTableView, data, lblTotal));
+        HBox productSearchBox = new HBox();
+        productSearchBox.setSpacing(5);
+        productSearchBox.setAlignment(Pos.CENTER);
+        productSearchBox.getChildren().addAll(lblProduct, txtProductName, btnSearchProduct);
+        HBox productControlBox = new HBox();
+        productControlBox.setSpacing(5);
+        productControlBox.setAlignment(Pos.CENTER);
+        productControlBox.getChildren().addAll(lblQuantity, txtQuantity, lblRebate, txtRebate, btnAdd, btnRemove);
+        productDetBox.getChildren().addAll(productSearchBox, productControlBox);
         return productDetBox;
     }
 
@@ -219,7 +231,6 @@ public class NewSalesTitledHandler extends AbstractTitledPaneChangeListener {
         VBox productsSection = new VBox();
         productsSection.setPadding(insets);
         productsSection.setSpacing(5);
-        HBox productDetBox = populateProductDetBox();
         ScrollPane saleReportBox = new ScrollPane();
         saleReportTableView = getSaleReportTable();
         saleReportTableView.setItems(data);
@@ -230,6 +241,8 @@ public class NewSalesTitledHandler extends AbstractTitledPaneChangeListener {
         saleReportBox.setMinWidth(Constants.TITLED_WIDTH * 3 / 4);
         saleReportBox.setMaxWidth(Constants.TITLED_WIDTH * 3 / 4);
         saleReportBox.setContent(saleReportTableView);
+        saleReportBox.setMaxHeight(200);
+        VBox productDetBox = populateProductDetBox();
         productDetBox.setSpacing(5);
         productsSection.getChildren().addAll(productDetBox, saleReportBox);
         return productsSection;
@@ -239,10 +252,6 @@ public class NewSalesTitledHandler extends AbstractTitledPaneChangeListener {
         HBox saleBox = new HBox();
         saleBox.setPadding(insets);
         saleBox.setSpacing(5);
-        //Save Button Handler
-        Button btnGenerateInvoice = new Button();
-        btnGenerateInvoice.setText(InternationalizationUtil.getString(Constants.GENERATE_INVOICE));
-        btnGenerateInvoice.setOnAction(new SaveInvoiceButtonHandler(customerType, customerSearchEventHandler, this, data));
         //SaveAndPrint
         Button btnPrintInvoice = new Button();
         btnPrintInvoice.setText(InternationalizationUtil.getString(Constants.PRINT_AND_SAVE_INVOICE));
@@ -252,7 +261,7 @@ public class NewSalesTitledHandler extends AbstractTitledPaneChangeListener {
         btnClear.setText(InternationalizationUtil.getString(Constants.CLEAR));
         btnClear.setOnAction(new ClearButtonHandler(customerSearchEventHandler, this));
 
-        saleBox.getChildren().addAll(btnGenerateInvoice, btnPrintInvoice, btnClear);
+        saleBox.getChildren().addAll(btnPrintInvoice, btnClear);
         saleBox.setAlignment(Pos.CENTER);
         return saleBox;
     }
@@ -278,35 +287,6 @@ public class NewSalesTitledHandler extends AbstractTitledPaneChangeListener {
 
         salesMetaData.getChildren().addAll(lblState, cmbState, lblVehicle, txtVehicle, lblSupplyPlace, txtSupplyPlace, lblTransportationMode, txtTransportationMode);
         return salesMetaData;
-    }
-
-    @Override
-    protected void populatePane(TitledPane pane) {
-        VBox newSalesBox = new VBox();
-        newSalesBox.setSpacing(5);
-        newSalesBox.setPadding(insets);
-        VBox productsSection = populatedProducts();
-        HBox totalWrapper = new HBox();
-        HBox salesMetaDataSection = populateSalesMetaData();
-        VBox customerSection = populateCustomerPane();
-        HBox saleSection = populateSaleBox();
-        customerSection.setMinWidth(Constants.TITLED_WIDTH / 2+20);
-        customerSection.setMaxWidth(Constants.TITLED_WIDTH / 2+20);
-        customerSection.setMinHeight(Constants.TITLED_HEIGHT / 8 * 3);
-        customerSection.setMaxHeight(Constants.TITLED_HEIGHT / 8 * 3);
-        totalWrapper.getChildren().addAll(customerSection, lblTotal);
-        //Existing customer panel would be loaded only when the user selects the radio buttons. By default is it always new customer
-        newSalesBox.getChildren().addAll(totalWrapper, salesMetaDataSection, productsSection, saleSection);
-        newSalesBox.setPadding(insets);
-        pane.setPadding(insets);
-        ScrollPane scrlPane = new ScrollPane();
-        scrlPane.setPadding(insets);
-        scrlPane.setContent(newSalesBox);
-        newSalesBox.setMinHeight(Constants.TITLED_HEIGHT);
-        scrlPane.setMinHeight(Constants.TITLED_HEIGHT);
-        //scrlPane.setMinWidth(Constants.TITLED_WIDTH);
-        pane.setContent(scrlPane);
-        pane.setMinHeight(Constants.TITLED_HEIGHT+100);
     }
 
     protected VBox populateCustomerPane() {
@@ -410,4 +390,32 @@ public class NewSalesTitledHandler extends AbstractTitledPaneChangeListener {
         data.clear();
     }
 
+    @Override
+    protected void populatePane(TitledPane pane) {
+        VBox newSalesBox = new VBox();
+        newSalesBox.setSpacing(5);
+        newSalesBox.setPadding(insets);
+        VBox productsSection = populatedProducts();
+        HBox totalWrapper = new HBox();
+        HBox salesMetaDataSection = populateSalesMetaData();
+        VBox customerSection = populateCustomerPane();
+        HBox saleSection = populateSaleBox();
+        customerSection.setMinWidth(Constants.TITLED_WIDTH / 2 + 20);
+        customerSection.setMaxWidth(Constants.TITLED_WIDTH / 2 + 20);
+        customerSection.setMinHeight(Constants.TITLED_HEIGHT / 8 * 3 + 20);
+        customerSection.setMaxHeight(Constants.TITLED_HEIGHT / 8 * 3);
+        totalWrapper.getChildren().addAll(customerSection, lblTotal);
+        //Existing customer panel would be loaded only when the user selects the radio buttons. By default is it always new customer
+        newSalesBox.getChildren().addAll(totalWrapper, salesMetaDataSection, productsSection, saleSection);
+        newSalesBox.setPadding(insets);
+        pane.setPadding(insets);
+        ScrollPane scrlPane = new ScrollPane();
+        scrlPane.setPadding(insets);
+        scrlPane.setContent(newSalesBox);
+        newSalesBox.setMinHeight(Constants.TITLED_HEIGHT);
+        scrlPane.setMinHeight(Constants.TITLED_HEIGHT);
+        //scrlPane.setMinWidth(Constants.TITLED_WIDTH);
+        pane.setContent(scrlPane);
+        pane.setMinHeight(Constants.TITLED_HEIGHT + 100);
+    }
 }

@@ -51,6 +51,7 @@ public class StateServiceImpl {
                             stateMap.put(state.getState(), state.getId());
                             reverseStateMap.put(state.getId(), state.getState());
                         }
+                        DBConnectionUtils.commitTransaction(connection);
                     } catch (SQLException exp) {
                         logger.error("Could not fetch list of states", exp);
                     }
@@ -65,6 +66,17 @@ public class StateServiceImpl {
             getStates();
         }
         return String.format("%s (%2d)",reverseStateMap.get(num), num);
+    }
+
+    public String getState(Long num, Boolean format) {
+        if(format) {
+            return getState(num);
+        } else {
+            if(states == null) {
+                getStates();
+            }
+            return reverseStateMap.get(num);
+        }
     }
 
     public Long getStateCode(String str) {

@@ -24,7 +24,7 @@ import java.sql.Timestamp;
  * from copyright owner is not permited.
  **/
 public class Customer {
-    private long id;
+    private Long id;
     private String customerName;
     private String address;
     private String gstin;
@@ -40,11 +40,11 @@ public class Customer {
         this.createDate = createDate;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

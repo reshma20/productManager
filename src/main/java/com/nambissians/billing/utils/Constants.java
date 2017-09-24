@@ -185,4 +185,10 @@ public interface Constants {
     String TOTAL_TAXES_STR = "Total Taxes";
     String HSN_CODE_STR = "HSN";
     String PRINTABLE_INVOICE_NUMBER = "printableInvoiceNumber";
+    String ERR_COULD_NOT_GET_RECORD = "ERR_COULD_NOT_GET_RECORD";
+    String ERR_NOT_VALID_INVOICE_NUM = "ERR_NOT_VALID_INVOICE_NUM";
+    String ERR_COULD_NOT_UPDATE_SALERECORD = "ERR_COULD_NOT_UPDATE_SALERECORD";
+    String ERR_NO_APP_TO_OPEN = "ERR_NO_APP_TO_OPEN";
+    String REMOVE = "remove";
+    String LOG4J_CONFIGURATION_FILE = "log4j.configuration";
 }
