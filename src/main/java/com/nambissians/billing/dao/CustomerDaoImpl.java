@@ -129,4 +129,13 @@ public class CustomerDaoImpl {
         pstmt.close();
         return customers;
     }
+
+    private static final String DELETE_CUSTOMER_ID = "DELETE FROM customer WHERE id = ?";
+    public boolean deleteCustomer(Connection connection, Long id) throws SQLException{
+        PreparedStatement pstmt = connection.prepareStatement(DELETE_CUSTOMER_ID);
+        pstmt.setLong(1, id);
+        int res = pstmt.executeUpdate();
+        pstmt.close();
+        return (res == 1);
+    }
 }

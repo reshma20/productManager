@@ -190,5 +190,10 @@ public interface Constants {
     String ERR_COULD_NOT_UPDATE_SALERECORD = "ERR_COULD_NOT_UPDATE_SALERECORD";
     String ERR_NO_APP_TO_OPEN = "ERR_NO_APP_TO_OPEN";
     String REMOVE = "remove";
+    String DELETE = "delete";
+    String DELETE_CUSTOMER="deleteCustomer";
+    String DELETE_CUSTOMER_CAPTION = "deleteCustomerCaption";
     String LOG4J_CONFIGURATION_FILE = "log4j.configuration";
+    String ERR_COULD_NOT_DELETE_CUSTOMER = "ERR_COULD_NOT_DELETE_CUSTOMER";
+    String MSG_DELETED_CUSTOMER_SUCCESSFULLY = "MSG_DELETED_CUSTOMER_SUCCESSFULLY";
 }

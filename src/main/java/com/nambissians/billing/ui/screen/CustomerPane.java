@@ -53,7 +53,7 @@ public class CustomerPane extends TitlePaneGenerator {
         TitledPane listPane = new TitledPane();
         listPane.setText(InternationalizationUtil.getString(Constants.LIST));
         listPane.setMinHeight(700);
-        listPane.expandedProperty().addListener(new ViewCustomerTitledChangeListener(listPane, null, false, true));
+        listPane.expandedProperty().addListener(new ViewCustomerTitledChangeListener(listPane, null, false, true, true));
         subRoot.getPanes().addAll(newPane, listPane, editPane);
         customerPane.setContent(subRoot);
         return customerPane;

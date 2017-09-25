@@ -8,7 +8,9 @@ import com.nambissians.billing.ui.screen.AbstractTitledPaneChangeListener;
 import com.nambissians.billing.utils.Constants;
 import com.nambissians.billing.utils.GridUtils;
 import com.nambissians.billing.utils.InternationalizationUtil;
+import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -16,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.security.Timestamp;
 import java.util.List;
@@ -44,14 +47,16 @@ public class ViewCustomerTitledChangeListener extends AbstractTitledPaneChangeLi
     private Customer selectedCustomer;
     private boolean selectCustomer;
     private boolean alwaysRefresh;
+    private boolean loadContextMenu;
     private CustomerServiceImpl customerService = new CustomerServiceImpl();
 
 
-    public ViewCustomerTitledChangeListener(TitledPane pane, List<Customer> customers, boolean selectCustomer, boolean loadFromDB) {
+    public ViewCustomerTitledChangeListener(TitledPane pane, List<Customer> customers, boolean selectCustomer, boolean loadFromDB, boolean loadContextMenu) {
         super(pane);
         this.customers = customers;
         this.selectCustomer = selectCustomer;
         this.alwaysRefresh = loadFromDB;
+        this.loadContextMenu = loadContextMenu;
     }
 
     public TableView populateTableView() {
@@ -108,13 +113,47 @@ public class ViewCustomerTitledChangeListener extends AbstractTitledPaneChangeLi
 
             });
         }
+        if (loadContextMenu) {
+            table.setRowFactory(new Callback<TableView<Customer>, TableRow<Customer>>() {
+                @Override
+                public TableRow<Customer> call(TableView<Customer> param) {
+                    final TableRow<Customer> row = new TableRow<>();
+                    final ContextMenu rowMenu = new ContextMenu();
+                    MenuItem removeItem = new MenuItem(InternationalizationUtil.getString(Constants.DELETE));
+                    removeItem.setOnAction(new EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent event) {
+                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                            alert.setTitle(InternationalizationUtil.getString(Constants.DELETE_CUSTOMER));
+                            alert.setHeaderText(InternationalizationUtil.getString(Constants.DELETE_CUSTOMER));
+                            alert.setContentText(InternationalizationUtil.getString(Constants.DELETE_CUSTOMER_CAPTION));
+                            alert.showAndWait();
+                            if (alert.getResult().equals(ButtonType.OK)) {
+                                Customer customer = row.getItem();
+                                if (customerService.deleteCustomer(customer.getId())) {
+                                    table.getItems().remove(row.getItem());
+                                }
+                            }
+                        }
+                    });
+                    rowMenu.getItems().add(removeItem);
+                    row.contextMenuProperty().bind(
+                            Bindings.when(Bindings.isNotNull(row.itemProperty()))
+                                    .then(rowMenu)
+                                    .otherwise((ContextMenu) null));
+                    return row;
+                }
+            });
+        }
+
         return table;
     }
 
     @Override
     protected void populatePane(TitledPane pane) {
         ScrollPane scrlPane = new ScrollPane();
-        scrlPane.setPadding(new Insets(10,10,10,10));
+        scrlPane.setPadding(new Insets(10, 10, 10, 10));
         scrlPane.setContent(populateTableView());
         scrlPane.setMinHeight(Constants.TITLED_HEIGHT);
         pane.setContent(scrlPane);

@@ -125,4 +125,22 @@ public class CustomerServiceImpl {
             return false;
         }
     }
+
+    public boolean deleteCustomer(Long id) {
+        try {
+            Connection connection = DBConnectionUtils.getConnection();
+            if (customerDao.deleteCustomer(connection, id)) {
+                DBConnectionUtils.commitTransaction(connection);
+                NotificationUtils.showMessage(InternationalizationUtil.getString(Constants.MSG_DELETED_CUSTOMER_SUCCESSFULLY));
+            } else {
+                DBConnectionUtils.rollbackTransaction(connection);
+                NotificationUtils.showMessage(InternationalizationUtil.getString(Constants.ERR_COULD_NOT_DELETE_CUSTOMER));
+            }
+            return true;
+        } catch (Exception exp) {
+            logger.error("Could not delete customer {}", id, exp);
+            NotificationUtils.showError(InternationalizationUtil.getString(Constants.ERR_COULD_NOT_DELETE_CUSTOMER));
+            return false;
+        }
+    }
 }

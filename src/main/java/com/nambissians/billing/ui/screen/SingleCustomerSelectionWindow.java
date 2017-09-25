@@ -56,7 +56,7 @@ public class SingleCustomerSelectionWindow {
         customerPane.setMinWidth(Constants.TITLED_WIDTH);
         customerPane.setMinHeight(Constants.TITLED_HEIGHT);
 
-        ViewCustomerTitledChangeListener customerListPopulater = new ViewCustomerTitledChangeListener(null, customers, true, false);
+        ViewCustomerTitledChangeListener customerListPopulater = new ViewCustomerTitledChangeListener(null, customers, true, false, false);
         customerListPopulater.populateScrollPane(customerPane);
         stage.setScene(new Scene(customerPane));
         stage.setTitle(InternationalizationUtil.getString(Constants.SELECT_CUSTOMER));
