@@ -57,13 +57,12 @@ public class SaveAndPrintInvoiceButtonHandler extends SaveInvoiceButtonHandler {
     public void handle(ActionEvent event) {
         String uuid = UUIDGenerator.getNextUUID();
         super.handleInternal(event, uuid);
-        SaleRecord saleRecord = saleReportService.getSaleRecord(uuid);
+        SaleRecord saleRecord = saleReportService.getSaleRecord(uuid, gstBill);
         OwnerProfile profile = profileService.getOwnerProfile();
         List<Product> products = productService.getAllProductsWithApplicableTaxes();
         //PrintUtils.printInvoice(saleRecord,profile, products);
         try {
             String filePath = PDFWriter.generatePdfInvoice(profile, saleRecord, products);
-            //TODO open file in default editor
             if (Desktop.isDesktopSupported()) {
                 try {
                     File myFile = new File(filePath);

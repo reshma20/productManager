@@ -36,6 +36,7 @@ public class SaveInvoiceButtonHandler implements EventHandler<ActionEvent> {
     private NewSalesTitledHandler newSalesTitledHandler;
     private ToggleGroup rbToggleGp;
     private SaleReportServiceImpl saleReportService = new SaleReportServiceImpl();
+    protected boolean gstBill;
 
     private ObservableList<SaleReport> data;
 
@@ -60,13 +61,13 @@ public class SaveInvoiceButtonHandler implements EventHandler<ActionEvent> {
         saleRecord.setCustomer(customer);
         saleRecord.setSaleMetaData(saleMetaData);
         saleRecord.setBreakUp(data);
-        if (saleReportService.persist(saleRecord)) {
-            customerSearchEventHandler.clearExistingCustomer();
-            newSalesTitledHandler.clearData();
-            newSalesTitledHandler.clearNewCustomer();
-            newSalesTitledHandler.clearSalesMetaData();
-        }
+        gstBill = saleReportService.persist(saleRecord);
+        customerSearchEventHandler.clearExistingCustomer();
+        newSalesTitledHandler.clearData();
+        newSalesTitledHandler.clearNewCustomer();
+        newSalesTitledHandler.clearSalesMetaData();
     }
+
 
     @Override
     public void handle(ActionEvent event) {

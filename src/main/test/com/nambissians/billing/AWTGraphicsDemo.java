@@ -186,7 +186,7 @@ public class AWTGraphicsDemo extends Frame {
         DBConnectionUtils.initializeDbConnections("manager", "manager");
         ownerProfile = profileService.getOwnerProfile();
         products = new ProductServiceImpl().getAllProductsWithApplicableTaxes();
-        sr = saleReportService.getSaleRecord("7df6d5a9-b576-4869-b2c8-d2ce829974a0");
+        sr = saleReportService.getSaleRecord("7df6d5a9-b576-4869-b2c8-d2ce829974a0", true);
         prepareGUI();
     }
 

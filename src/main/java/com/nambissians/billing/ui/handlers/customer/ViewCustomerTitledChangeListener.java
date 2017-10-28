@@ -17,6 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -127,6 +128,7 @@ public class ViewCustomerTitledChangeListener extends AbstractTitledPaneChangeLi
                             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                             alert.setTitle(InternationalizationUtil.getString(Constants.DELETE_CUSTOMER));
                             alert.setHeaderText(InternationalizationUtil.getString(Constants.DELETE_CUSTOMER));
+                            alert.initModality(Modality.APPLICATION_MODAL);
                             alert.setContentText(InternationalizationUtil.getString(Constants.DELETE_CUSTOMER_CAPTION));
                             alert.showAndWait();
                             if (alert.getResult().equals(ButtonType.OK)) {

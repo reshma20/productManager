@@ -311,7 +311,11 @@ public class SaleReportDaoImpl {
         pstmt.setLong(4, salesRecord.getSaleMetaData().getState());
         pstmt.setString(5, salesRecord.getSaleMetaData().getVehicle());
         pstmt.setString(6, salesRecord.getCustomer().getCustomerName());
-        pstmt.setLong(7, salesRecord.getCustomer().getId());
+        if(salesRecord.getCustomer().getId() != null) {
+            pstmt.setLong(7, salesRecord.getCustomer().getId());
+        } else {
+            pstmt.setLong(7, 0);
+        }
         pstmt.setString(8, salesRecord.getCustomer().getAddress());
         pstmt.setString(9, salesRecord.getCustomer().getGstin());
         pstmt.setString(10, salesRecord.getCustomer().getTel());
@@ -346,7 +350,11 @@ public class SaleReportDaoImpl {
             pstmt.setLong(4, salesRecord.getSaleMetaData().getState());
             pstmt.setString(5, salesRecord.getSaleMetaData().getVehicle());
             pstmt.setString(6, salesRecord.getCustomer().getCustomerName());
-            pstmt.setLong(7, salesRecord.getCustomer().getId());
+            if(salesRecord.getCustomer().getId() != null) {
+                pstmt.setLong(7, salesRecord.getCustomer().getId());
+            } else {
+                pstmt.setLong(7, Long.valueOf(0));
+            }
             pstmt.setString(8, salesRecord.getCustomer().getAddress());
             pstmt.setString(9, salesRecord.getCustomer().getGstin());
             pstmt.setString(10, salesRecord.getCustomer().getTel());

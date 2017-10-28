@@ -142,6 +142,7 @@ public interface Constants {
     int INVOICE_CUSTOMER_SPACE = 100;
     String LINE_FEED_CHAR = "\n";
     SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    SimpleDateFormat SDF_DATE_ONLY = new SimpleDateFormat("dd/MM/yyyy");
     String SNO = "SNo";
     String CODE = "Code";
     String DESCRIPTION_TAG = "Description";

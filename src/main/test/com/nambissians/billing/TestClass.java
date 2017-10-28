@@ -1,10 +1,7 @@
-package com.nambissians.billing.ui.handlers.sales;
+package nambissians.billing;/**
+ * Created by SajiV on 25/09/17.
+ */
 
-
-import com.nambissians.billing.ui.handlers.NambissiansAbstractMenuHandler;
-import javafx.scene.control.ScrollBar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * This is a copyright of the Brahmana food products
  * <p>
@@ -24,16 +21,21 @@ import org.slf4j.LoggerFactory;
  * Redistribution and use in source and binary forms, without permission
  * from copyright owner is not permited.
  **/
-
-public class EditSalesHandler extends NambissiansAbstractMenuHandler {
-    private static final Logger logger = LoggerFactory.getLogger(EditSalesHandler.class);
-
-    public EditSalesHandler(String name) {
-        super(name);
+public class TestClass {
+    static Integer add(Integer a, Integer b) {
+        Integer c = 0;
+        try {
+            c = a + b;
+            return c;
+        } finally {
+            c = 100;
+            System.out.println("call is not yet returned. Value of c : " + c);
+            return c;
+        }
     }
 
-    @Override
-    public void generateView(ScrollBar scroll) {
 
+    public static void main(String[] args) {
+        System.out.println(add(5, 10));
     }
 }

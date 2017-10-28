@@ -9,10 +9,7 @@ import com.nambissians.billing.model.SaleRecord;
 import com.nambissians.billing.service.ProductServiceImpl;
 import com.nambissians.billing.service.ProfileServiceImpl;
 import com.nambissians.billing.service.SaleReportServiceImpl;
-import com.nambissians.billing.utils.Constants;
-import com.nambissians.billing.utils.InternationalizationUtil;
-import com.nambissians.billing.utils.NotificationUtils;
-import com.nambissians.billing.utils.PDFWriter;
+import com.nambissians.billing.utils.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -62,7 +59,11 @@ public class ExportSaleListener implements EventHandler<ActionEvent> {
         ObservableList<SaleMetaData> data = handler.getData();
         List<SaleRecord> saleRecords = new ArrayList<>();
         for (SaleMetaData smd : data) {
-            SaleRecord sr = saleReportService.getSaleRecord(smd.getUuid(), false);
+            String initial = Constants.GST_INVOICE_INITIAL;
+            if (smd.isGstBill()) {
+                initial = Constants.GST_BILL_INITIAL;
+            }
+            SaleRecord sr = saleReportService.getSaleRecord(initial, smd.getId());
             saleRecords.add(sr);
         }
         OwnerProfile profile = profileService.getOwnerProfile();
@@ -70,10 +71,9 @@ public class ExportSaleListener implements EventHandler<ActionEvent> {
         Timestamp ts = new Timestamp(Calendar.getInstance().getTimeInMillis());
         try {
             String date = Constants.SDF.format(ts);
-            date = date.replace("/", "_");
-            date = date.replace(":","_");
-            date = date.replace(" ", Constants.EMPTY_STRING);
-            String filePath = PDFWriter.createInvoiceReport(saleRecords, date, products, profile);
+            date = date.replace("/", "_").replace(":", "_").replace(" ", Constants.EMPTY_STRING);
+            String filePath = ExportUtil.generateExportReport(profile, saleRecords, products, date);
+            //PDFWriter.createInvoiceReport(saleRecords, date, products, profile);
             if (Desktop.isDesktopSupported()) {
                 try {
                     File myFile = new File(filePath);

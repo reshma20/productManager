@@ -306,7 +306,7 @@ public class PDFWriter {
         } else {
             initial = Constants.GST_INVOICE_INITIAL;
         }
-        String filePath = String.format("%s%s.pdf", basePath, File.separator, initial, saleRecord.getSaleMetaData().getPrintableInvoiceNumber());
+        String filePath = String.format("%s%s%s.pdf", basePath, File.separator, saleRecord.getSaleMetaData().getPrintableInvoiceNumber());
         Document document = new Document();
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
         document.open();

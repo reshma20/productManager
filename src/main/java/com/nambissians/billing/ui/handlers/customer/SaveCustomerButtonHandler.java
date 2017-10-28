@@ -4,6 +4,7 @@ import com.nambissians.billing.model.Customer;
 import com.nambissians.billing.model.Tax;
 import com.nambissians.billing.service.CustomerServiceImpl;
 import com.nambissians.billing.service.TaxServiceImpl;
+import com.nambissians.billing.utils.Constants;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextArea;
@@ -58,6 +59,10 @@ public class SaveCustomerButtonHandler implements EventHandler<ActionEvent> {
             cust.setAddress(txtAddress.getText());
             cust.setGstin(txtGSTIN.getText());
             customerService.persist(cust);
+            txtEmail.setText(Constants.EMPTY_STRING);
+            txtTel.setText(Constants.EMPTY_STRING);
+            txtAddress.setText(Constants.EMPTY_STRING);
+            txtGSTIN.setText(Constants.EMPTY_STRING);
         } catch (Exception exp) {
             logger.error("Couldn't save tax", exp);
         }

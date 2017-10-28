@@ -3,7 +3,10 @@ package com.nambissians.billing.service;
 
 import com.nambissians.billing.dao.ProfileDaoImpl;
 import com.nambissians.billing.model.OwnerProfile;
+import com.nambissians.billing.utils.Constants;
 import com.nambissians.billing.utils.DBConnectionUtils;
+import com.nambissians.billing.utils.InternationalizationUtil;
+import com.nambissians.billing.utils.NotificationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,12 +54,14 @@ public class ProfileServiceImpl {
                 returnVal = true;
             }
             if(returnVal) {
+                NotificationUtils.showMessage(InternationalizationUtil.getString(Constants.MSG_PROFILE_SAVED));
                 return DBConnectionUtils.commitTransaction(connection);
             } else {
                 return DBConnectionUtils.rollbackTransaction(connection);
             }
         } catch (SQLException exp) {
             logger.error("Could not save profile {}", profile, exp);
+            NotificationUtils.showMessage(InternationalizationUtil.getString(Constants.ERR_PROFILE_SAVED));
         }
         return false;
     }

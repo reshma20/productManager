@@ -31,7 +31,7 @@ import java.util.List;
  **/
 public class ProductDaoImpl {
 
-    private static final String INSERT_PROFILE = "INSERT INTO product (tag, description, hsn_code,taxes,price, createdate) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_PROFILE = "INSERT INTO product (tag, description, hsn_code,taxes,price, createdate) VALUES (UPPER(?), ?, ?, ?, ?, ?)";
 
     private Product mapProduct(ResultSet rs) throws SQLException {
         Product prd = new Product();

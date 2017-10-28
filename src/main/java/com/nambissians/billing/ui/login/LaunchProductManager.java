@@ -92,7 +92,7 @@ public class LaunchProductManager extends Application {
             BasicConfigurator.configure();
             Properties props = new Properties();
             InputStream input = new FileInputStream(args[0]);
-            System.out.println();
+            //System.out.println();
             props.load(input);
             props.putAll(System.getProperties());
             //props.put(Constants.LOG4J_CONFIGURATION_FILE, args[0]);
